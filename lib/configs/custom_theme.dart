@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/configs/app_colors.dart';
 
 class CustomTheme {
   CustomTheme._(); // Private constructor to prevent instantiation
@@ -6,40 +7,34 @@ class CustomTheme {
   // Light Theme
   static final ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
-    primarySwatch: Colors.indigo,
-    scaffoldBackgroundColor: Colors.white,
-    appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.indigo,
-      foregroundColor: Colors.white,
+    scaffoldBackgroundColor: AppColor.blue10,
+    appBarTheme: AppBarTheme(
+      backgroundColor: AppColor.blue60,
+      foregroundColor: AppColor.blue10,
       elevation: 0,
     ),
-    textTheme: const TextTheme(
-      bodyLarge: TextStyle(color: Colors.black87),
-      bodyMedium: TextStyle(color: Colors.black54),
-    ),
     colorScheme: ColorScheme.light(
-      primary: Colors.indigo,
-      secondary: Colors.deepPurple,
+      primary: AppColor.blue60,
+      brightness: Brightness.light,
+      surface: AppColor.blue60,
+      error: AppColor.red40,
     ),
   );
 
   // Dark Theme
   static final ThemeData darkTheme = ThemeData(
     brightness: Brightness.dark,
-    primarySwatch: Colors.indigo,
-    scaffoldBackgroundColor: const Color(0xFF121212),
+    scaffoldBackgroundColor: AppColor.darkBlue,
     appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.black,
-      foregroundColor: Colors.white,
+      backgroundColor: AppColor.blue10,
+      foregroundColor: AppColor.blue90,
       elevation: 0,
     ),
-    textTheme: const TextTheme(
-      bodyLarge: TextStyle(color: Colors.white),
-      bodyMedium: TextStyle(color: Colors.white70),
-    ),
     colorScheme: ColorScheme.dark(
-      primary: Colors.indigo,
-      secondary: Colors.deepPurple,
+      primary: AppColor.blue10,
+      brightness: Brightness.dark,
+      surface: AppColor.blue10,
+      error: AppColor.red40,
     ),
   );
 }
