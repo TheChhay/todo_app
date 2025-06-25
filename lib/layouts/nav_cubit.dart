@@ -7,6 +7,6 @@ class NavCubit extends Cubit<NavState> {
   NavCubit() : super(const NavInitial(0));
 
   void changeTab(int index) {
-    emit(NavInitial(index)); // emitting new state with updated index
+    emit(NavInitial(index));
   }
 }

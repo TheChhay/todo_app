@@ -16,37 +16,38 @@ class DefaultLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // appBar: AppBar(title: const Text('App')),
-      body: child,
-      bottomNavigationBar: BlocBuilder<NavCubit, NavState>(
-        builder: (context, state) {
-          return GNav(
-            backgroundColor: AppColor.darkBlue,
-            color: AppColor.blue10,
-            activeColor: AppColor.blue10,
-            onTabChange: (index) {
-              context.read<NavCubit>().changeTab(index);
-              switch (index) {
-                case 0:
-                  context.goNamed(RouterName.homePage);
-                  break;
-                case 1:
-                  context.goNamed(RouterName.calendarPage);
-                case 2:
-                  context.goNamed(RouterName.statisticPage);
-                  break;
-              }
-            },
-            tabs: [
-              GButton(icon: CupertinoIcons.home, text: 'Home'),
-              GButton(icon: CupertinoIcons.calendar, text: 'Calendar'),
-              GButton(icon: CupertinoIcons.chart_bar_square_fill, text: 'Statistic'),
-            ],
-            gap: 8.w,
-            
-          );
-        },
+    return SafeArea(
+      child: Scaffold(
+        body: child,
+        bottomNavigationBar: BlocBuilder<NavCubit, NavState>(
+          builder: (context, state) {
+            return GNav(
+              backgroundColor: AppColor.darkBlue,
+              color: AppColor.blue10,
+              activeColor: AppColor.blue10,
+              onTabChange: (index) {
+                context.read<NavCubit>().changeTab(index);
+                switch (index) {
+                  case 0:
+                    context.goNamed(RouterName.homePage);
+                    break;
+                  case 1:
+                    context.goNamed(RouterName.calendarPage);
+                  case 2:
+                    context.goNamed(RouterName.statisticPage);
+                    break;
+                }
+              },
+              tabs: [
+                GButton(icon: CupertinoIcons.home, text: 'Home'),
+                GButton(icon: CupertinoIcons.calendar, text: 'Calendar'),
+                GButton(icon: CupertinoIcons.chart_bar_square_fill, text: 'Statistic'),
+              ],
+              gap: 8.w,
+              
+            );
+          },
+        ),
       ),
     );
   }

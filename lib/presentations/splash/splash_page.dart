@@ -19,7 +19,7 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.delayed(Duration(milliseconds: 2000),(){
+    Future.delayed(Duration(milliseconds: 2500),(){
       context.goNamed('home');
     });
   }

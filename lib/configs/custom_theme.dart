@@ -19,6 +19,12 @@ class CustomTheme {
       surface: AppColor.blue60,
       error: AppColor.red40,
     ),
+    textTheme: TextTheme(
+      bodyLarge: TextStyle(color: AppColor.blue100),
+      bodyMedium: TextStyle(color: AppColor.blue100),
+      titleLarge: TextStyle(color: AppColor.blue100),
+      labelLarge: TextStyle(color: AppColor.blue100),
+    ),
   );
 
   // Dark Theme
@@ -36,5 +42,12 @@ class CustomTheme {
       surface: AppColor.blue10,
       error: AppColor.red40,
     ),
+    textTheme: TextTheme(
+      bodyLarge: TextStyle(color: AppColor.blue10),
+      bodyMedium: TextStyle(color: AppColor.blue10),
+      titleLarge: TextStyle(color: AppColor.blue10),
+      labelLarge: TextStyle(color: AppColor.blue10),
+    ),
+
   );
 }
