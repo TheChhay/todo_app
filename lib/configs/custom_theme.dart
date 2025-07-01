@@ -6,6 +6,7 @@ class CustomTheme {
 
   // Light Theme
   static final ThemeData lightTheme = ThemeData(
+    useMaterial3: true,
     brightness: Brightness.light,
     scaffoldBackgroundColor: AppColor.blue10,
     appBarTheme: AppBarTheme(
@@ -14,9 +15,9 @@ class CustomTheme {
       elevation: 0,
     ),
     colorScheme: ColorScheme.light(
-      primary: AppColor.blue60,
+      primary: AppColor.blue50,
       brightness: Brightness.light,
-      surface: AppColor.blue60,
+      surface: AppColor.blue40,
       error: AppColor.red40,
     ),
     textTheme: TextTheme(
@@ -25,6 +26,12 @@ class CustomTheme {
       titleLarge: TextStyle(color: AppColor.blue100),
       labelLarge: TextStyle(color: AppColor.blue100),
     ),
+    textSelectionTheme: TextSelectionThemeData(
+      selectionColor: AppColor.blue40, // text highlight color
+      selectionHandleColor: AppColor.blue40, // draggable handles
+      cursorColor: AppColor.blue50, // cursor color
+    ),
+
   );
 
   // Dark Theme
@@ -48,6 +55,5 @@ class CustomTheme {
       titleLarge: TextStyle(color: AppColor.blue10),
       labelLarge: TextStyle(color: AppColor.blue10),
     ),
-
   );
 }

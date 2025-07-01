@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 enum TaskPriority { high, medium, low }
-enum TaskType { oneTime, daily, weekday, weekend }
+enum TaskRepeat { oneTime, daily, weekday, weekend }
 
 class TaskModel {
   final int id;
@@ -12,7 +12,7 @@ class TaskModel {
   final bool isComplete;
   final DateTime? completedAt;
   final DateTime? reminderDate;
-  final TaskType taskType;
+  final TaskRepeat taskRepeat;
 
   TaskModel({
     required this.id,
@@ -23,7 +23,7 @@ class TaskModel {
     required this.isComplete,
     this.completedAt,
     this.reminderDate,
-    required this.taskType,
+    required this.taskRepeat,
   });
 
   /// Converts from JSON map to Task object
@@ -37,7 +37,7 @@ class TaskModel {
       isComplete: json['is_complete'] == 1,
       completedAt: json['completed_at'] != null ? DateTime.tryParse(json['completed_at']) : null,
       reminderDate: json['reminder_date'] != null ? DateTime.tryParse(json['reminder_date']) : null,
-      taskType: _taskTypeFromString(json['task_type'] as String),
+      taskRepeat: _taskTypeFromString(json['task_type'] as String),
     );
   }
 
@@ -52,7 +52,7 @@ class TaskModel {
       'is_complete': isComplete ? 1 : 0,
       'completed_at': completedAt?.toIso8601String(),
       'reminder_date': reminderDate?.toIso8601String(),
-      'task_type': taskType.name,
+      'task_type': taskRepeat.name,
     };
   }
 
@@ -71,16 +71,16 @@ class TaskModel {
   }
 
   /// Helper: Convert string to TaskType enum
-  static TaskType _taskTypeFromString(String value) {
+  static TaskRepeat _taskTypeFromString(String value) {
     switch (value.toLowerCase()) {
       case 'one_time':
-        return TaskType.oneTime;
+        return TaskRepeat.oneTime;
       case 'daily':
-        return TaskType.daily;
+        return TaskRepeat.daily;
       case 'weekday':
-        return TaskType.weekday;
+        return TaskRepeat.weekday;
       case 'weekend':
-        return TaskType.weekend;
+        return TaskRepeat.weekend;
       default:
         throw ArgumentError('Invalid task type value: $value');
     }

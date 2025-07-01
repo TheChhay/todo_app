@@ -1,36 +1,36 @@
 import 'dart:ui';
-
-import 'package:todo_app/utils/get_hex_color.dart';
+import 'package:todo_app/configs/app_colors.dart';
+import 'package:todo_app/utils/color_convertor.dart';
+import 'package:flutter/material.dart';
 
 class CategoryModel {
-  final int id;
+  int? id;
   final String name;
-  final String color;
-  // final String colorHex; // Optional: color code like "#FF5733"
+  String? color;
 
   CategoryModel({
-    required this.id,
+    this.id,
     required this.name,
-    required this.color,
-    // required this.colorHex,
-  });
+    this.color, // make optional
+  }); // set default
 
+
+  /// JSON Factory
   factory CategoryModel.fromJson(Map<String, dynamic> json) {
     return CategoryModel(
       id: json['id'] as int,
       name: json['name'] as String,
-      color: json['color'] as String,
-      // colorHex: json['color_hex'] as String,
+      color: json['color'] as String?, // allow null, use default
     );
   }
 
-  Color getColorValue() => getHexToColor(color);
-
+  /// JSON to Map
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'name': name,
-      // 'color_hex': colorHex,
+      'color': color,
     };
   }
+
 }

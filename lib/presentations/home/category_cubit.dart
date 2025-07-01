@@ -11,22 +11,57 @@ class CategoryCubit extends Cubit<CategoryState> {
   CategoryCubit(this._categoryService) : super(CategoryInitial());
 
   Future<void> loadCategories() async {
-    final categories = await _categoryService.getAllCategories();
-    emit(CategoryLoaded(categories));
+    emit(CategoryLoading());
+    try {
+      final categories = await _categoryService.getAllCategories();
+      final totalTasks = await _categoryService.countTasksGroupedByCategory();
+      emit(CategoryLoaded(categories, totalTasks));
+    } catch (e) {
+      emit(CategoryError('Failed to load categories: $e'));
+    }
   }
 
   Future<void> addCategory(CategoryModel category) async {
-    await _categoryService.insertCategory(category);
-    await loadCategories();
+    emit(CategoryLoading());
+    try {
+      await _categoryService.insertCategory(category);
+      final categories = await _categoryService.getAllCategories();
+      final totalTasks = await _categoryService.countTasksGroupedByCategory();
+
+      emit(CategorySuccess('Category added successfully.'));
+      emit(CategoryLoaded(categories, totalTasks));
+      print('Category added successfully.');
+    } catch (e) {
+      emit(CategoryError('Failed to add category: $e'));
+      print('$e');
+    }
   }
 
   Future<void> deleteCategory(int id) async {
-    await _categoryService.deleteCategory(id);
-    await loadCategories();
+    emit(CategoryLoading());
+    try {
+      await _categoryService.deleteCategory(id);
+      final categories = await _categoryService.getAllCategories();
+      final totalTasks = await _categoryService.countTasksGroupedByCategory();
+
+      emit(CategorySuccess('Category deleted successfully.'));
+      emit(CategoryLoaded(categories, totalTasks));
+    } catch (e) {
+      emit(CategoryError('Failed to delete category: $e'));
+    }
   }
 
   Future<void> updateCategory(CategoryModel category) async {
-    await _categoryService.updateCategory(category);
-    await loadCategories();
+    emit(CategoryLoading());
+    try {
+      await _categoryService.updateCategory(category);
+      final categories = await _categoryService.getAllCategories();
+      final totalTasks = await _categoryService.countTasksGroupedByCategory();
+
+      emit(CategorySuccess('Category updated successfully.'));
+      emit(CategoryLoaded(categories, totalTasks));
+    } catch (e) {
+      emit(CategoryError('Failed to update category: $e'));
+    }
   }
 }

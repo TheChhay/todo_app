@@ -15,27 +15,27 @@ class AppColor{
   static const Color blue100 = Color(0xFF112148);
   static const Color darkBlue = Color(0xFF0A1329);
   // ❤️ Red Palette
-  static const Color red10 = Color(0xFFFEeded);
-  static const Color red20 = Color(0xFFFEE3E4);
-  static const Color red30 = Color(0xFFFCC6C6);
-  static const Color red40 = Color(0xFFF54748);
-  static const Color red50 = Color(0xFFDD4041);
-  static const Color red60 = Color(0xFFC4393A);
-  static const Color red70 = Color(0xFFB83536);
-  static const Color red80 = Color(0xFF932B2B);
-  static const Color red90 = Color(0xFF6E2020);
-  static const Color red100 = Color(0xFF561919);
+  static const red10 = Color(0xFFFDE6E6); // redLight
+  static const red20 = Color(0xFFFDD9D9); // redLightHover
+  static const red30 = Color(0xFFFAB0B0); // redLightActive
+  static const red40 = Color(0xFFEF0000); // redNormal
+  static const red50 = Color(0xFFD70000); // redNormalHover
+  static const red60 = Color(0xFFBF0000); // redNormalActive
+  static const red70 = Color(0xFFB30000); // redDark
+  static const red80 = Color(0xFF8F0000); // redDarkHover
+  static const red90 = Color(0xFF6C0000); // redDarkActive
+  static const red100 = Color(0xFF540000); // redDarker
   // 🌿 Green Palette
-  static const Color green10 = Color(0xFFE7F6ED);
-  static const Color green20 = Color(0xFFDAF2E4);
-  static const Color green30 = Color(0xFFB3E4C7);
-  static const Color green40 = Color(0xFF0BA849);
-  static const Color green50 = Color(0xFF0A9742);
-  static const Color green60 = Color(0xFF09863A);
-  static const Color green70 = Color(0xFF087E37);
-  static const Color green80 = Color(0xFF07652C);
-  static const Color green90 = Color(0xFF054C21);
-  static const Color green100 = Color(0xFF043B1A);
+  static const green10 = Color(0xFFE6F2E6); // greenLight
+  static const green20 = Color(0xFFD9EBD9); // greenLightHover
+  static const green30 = Color(0xFFB0D6B0); // greenLightActive
+  static const green40 = Color(0xFF007C00); // greenNormal
+  static const green50 = Color(0xFF007000); // greenNormalHover
+  static const green60 = Color(0xFF006300); // greenNormalActive
+  static const green70 = Color(0xFF005D00); // greenDark
+  static const green80 = Color(0xFF004A00); // greenDarkHover
+  static const green90 = Color(0xFF003800); // greenDarkActive
+  static const green100 = Color(0xFF002B00); // greenDarker
 
   // ⚪ White/Gray Palette
   static const Color gray10 = Color(0xFFFCFCFC);
@@ -50,16 +50,16 @@ class AppColor{
   static const Color gray100 = Color(0xFF505050);
 
   // 🌞 Yellow Palette
-  static const Color yellow10 = Color(0xFFFDF7EB);
-  static const Color yellow20 = Color(0xFFFDF3E1);
-  static const Color yellow30 = Color(0xFFFAE7C1);
-  static const Color yellow40 = Color(0xFFEFB036);
-  static const Color yellow50 = Color(0xFFD79E31);
-  static const Color yellow60 = Color(0xFFBF8D2B);
-  static const Color yellow70 = Color(0xFFB38429);
-  static const Color yellow80 = Color(0xFF8F6A20);
-  static const Color yellow90 = Color(0xFF6C4F18);
-  static const Color yellow100 = Color(0xFF543E13);
+  static const yellow10 = Color(0xFFFEFBE9); // yellowLight
+  static const yellow20 = Color(0xFFFEF9DE); // yellowLightHover
+  static const yellow30 = Color(0xFFFDF3BA); // yellowLightActive
+  static const yellow40 = Color(0xFFF7D720); // yellowNormal
+  static const yellow50 = Color(0xFFDEC21D); // yellowNormalHover
+  static const yellow60 = Color(0xFFC6AC1A); // yellowNormalActive
+  static const yellow70 = Color(0xFFB9A118); // yellowDark
+  static const yellow80 = Color(0xFF948113); // yellowDarkHover
+  static const yellow90 = Color(0xFF6F610E); // yellowDarkActive
+  static const yellow100 = Color(0xFF564B0B); // yellowDarker
 
   //violet
   static const Color violet10 = Color(0xFFFFE6FF);

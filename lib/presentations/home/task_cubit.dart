@@ -30,4 +30,15 @@ class TaskCubit extends Cubit<TaskState> {
     await loadTasks();
   }
 
+  //get all tasks group by category
+  Future<List<Map<String, dynamic>>> getAllTasksGroupByCategory() async {
+    final result = await _taskService.getAllTaskGroupByCategory();
+    return result;
+  }
+  //get all tasks by category
+  Future<List<TaskModel>> getAllTasksByCategory(int categoryId) async {
+    final result = await _taskService.getTasksByCategory(categoryId);
+    return result;
+  }
+
 }

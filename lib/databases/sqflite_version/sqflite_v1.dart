@@ -19,7 +19,7 @@ class SqfliteV1 {
         is_complete INTEGER NOT NULL,
         completed_at TEXT,
         reminder_date TEXT,
-        task_type TEXT NOT NULL,
+        task_repeat TEXT NOT NULL,
         FOREIGN KEY (category_id) REFERENCES categories (id)
       )
     ''';

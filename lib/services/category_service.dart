@@ -27,4 +27,18 @@ class CategoryService {
       whereArgs: [category.id],
     );
   }
+
+  Future<List<Map<String, dynamic>>> countTasksGroupedByCategory() async {
+    final db = await DatabaseSqlite.instance.database;
+
+    final result = await db.rawQuery('''
+    SELECT category_id, COUNT(*) as count
+    FROM tasks
+    GROUP BY category_id
+  ''');
+
+    return result;
+  }
+
+
 }
