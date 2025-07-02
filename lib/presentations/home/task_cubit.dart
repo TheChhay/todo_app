@@ -18,6 +18,7 @@ class TaskCubit extends Cubit<TaskState> {
   Future<void> addTask(TaskModel task) async {
     await _taskService.insertTask(task);
     await loadTasks();
+    debugPrint('add task success');
   }
 
   Future<void> deleteTask(int id) async {
@@ -29,16 +30,16 @@ class TaskCubit extends Cubit<TaskState> {
     await _taskService.updateTask(task);
     await loadTasks();
   }
-
-  //get all tasks group by category
-  Future<List<Map<String, dynamic>>> getAllTasksGroupByCategory() async {
-    final result = await _taskService.getAllTaskGroupByCategory();
-    return result;
-  }
   //get all tasks by category
   Future<List<TaskModel>> getAllTasksByCategory(int categoryId) async {
     final result = await _taskService.getTasksByCategory(categoryId);
     return result;
+  }
+
+  //update isComplete task
+  Future<void> updateTaskIsComplete(int id, bool isComplete)async{
+    await _taskService.updateIsComplete(id, isComplete);
+    await loadTasks();
   }
 
 }

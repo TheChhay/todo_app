@@ -6,10 +6,12 @@ import 'package:sqflite/sqflite.dart';
 import 'package:todo_app/configs/app_cubit_provider.dart';
 import 'package:todo_app/configs/custom_theme.dart';
 import 'package:todo_app/routes/router.dart';
+import 'package:intl/intl_standalone.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   // deleteAppDatabase();
+  await findSystemLocale();
   runApp(const App());
 }
 
@@ -17,7 +19,7 @@ Future<void> deleteAppDatabase() async {
   final dbPath = await getDatabasesPath();
   final path = join(dbPath, 'master_db.db'); // your database name
   await deleteDatabase(path);
-  print('Database deleted: $path');
+  debugPrint('Database deleted: $path');
 }
 
 class App extends StatelessWidget {

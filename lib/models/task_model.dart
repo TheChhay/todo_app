@@ -1,26 +1,25 @@
-import 'package:flutter/foundation.dart';
 
 enum TaskPriority { high, medium, low }
 enum TaskRepeat { oneTime, daily, weekday, weekend }
 
 class TaskModel {
-  final int id;
+  final int? id;
   final String taskName;
   final int categoryId;
   final TaskPriority priority;
   final DateTime taskDate;
-  final bool isComplete;
+  final bool? isComplete;
   final DateTime? completedAt;
   final DateTime? reminderDate;
   final TaskRepeat taskRepeat;
 
   TaskModel({
-    required this.id,
+    this.id,
     required this.taskName,
     required this.categoryId,
     required this.priority,
     required this.taskDate,
-    required this.isComplete,
+    this.isComplete = false,
     this.completedAt,
     this.reminderDate,
     required this.taskRepeat,
@@ -37,7 +36,7 @@ class TaskModel {
       isComplete: json['is_complete'] == 1,
       completedAt: json['completed_at'] != null ? DateTime.tryParse(json['completed_at']) : null,
       reminderDate: json['reminder_date'] != null ? DateTime.tryParse(json['reminder_date']) : null,
-      taskRepeat: _taskTypeFromString(json['task_type'] as String),
+      taskRepeat: _taskTypeFromString(json['task_repeat'] as String),
     );
   }
 
@@ -49,10 +48,10 @@ class TaskModel {
       'category_id': categoryId,
       'priority': priority.name,
       'task_date': taskDate.toIso8601String(),
-      'is_complete': isComplete ? 1 : 0,
+      'is_complete': (isComplete ?? false) ? 1 : 0,
       'completed_at': completedAt?.toIso8601String(),
       'reminder_date': reminderDate?.toIso8601String(),
-      'task_type': taskRepeat.name,
+      'task_repeat': taskRepeat.name,
     };
   }
 
@@ -70,19 +69,11 @@ class TaskModel {
     }
   }
 
-  /// Helper: Convert string to TaskType enum
-  static TaskRepeat _taskTypeFromString(String value) {
-    switch (value.toLowerCase()) {
-      case 'one_time':
-        return TaskRepeat.oneTime;
-      case 'daily':
-        return TaskRepeat.daily;
-      case 'weekday':
-        return TaskRepeat.weekday;
-      case 'weekend':
-        return TaskRepeat.weekend;
-      default:
-        throw ArgumentError('Invalid task type value: $value');
-    }
+static TaskRepeat _taskTypeFromString(String value) {
+  try {
+    return TaskRepeat.values.firstWhere((e) => e.name == value);
+  } catch (_) {
+    throw ArgumentError('Invalid task type value: $value');
   }
+}
 }

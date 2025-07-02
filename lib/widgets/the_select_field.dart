@@ -3,11 +3,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:select_field/select_field.dart';
 import 'package:todo_app/configs/app_colors.dart';
 
-class CategorySelectField extends StatelessWidget {
+class TheSelectField extends StatelessWidget {
   final List<Option<String>> options;
   final void Function(String)? onChanged;
 
-  const CategorySelectField({
+  const TheSelectField({
     super.key,
     required this.options,
     this.onChanged,
@@ -18,7 +18,7 @@ class CategorySelectField extends StatelessWidget {
     return SelectField<String>(
       menuPosition: MenuPosition.below,
       menuDecoration: MenuDecoration(
-        alignment: MenuAlignment.center,
+        alignment: MenuAlignment.center,height: 160.w,
         separatorBuilder: (context, index) => Container(
           height: 1,
           width: double.infinity,

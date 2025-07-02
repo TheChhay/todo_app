@@ -50,11 +50,24 @@ class TaskService {
     return result;
   }
 
-
-
-  Future<List<TaskModel>> getTasksByCategory(int categoryId) async{
+  Future<List<TaskModel>> getTasksByCategory(int categoryId) async {
     final db = await DatabaseSqlite.instance.database;
-    final result = await db.query('tasks', where: 'category_id = ?', whereArgs: [categoryId]);
+    final result = await db.query(
+      'tasks',
+      where: 'category_id = ?',
+      whereArgs: [categoryId],
+    );
     return result.map((json) => TaskModel.fromJson(json)).toList();
+  }
+
+   //update task isComplete task
+  Future<void> updateIsComplete(int id, bool isComplete) async {
+    final db = await DatabaseSqlite.instance.database;
+    await db.update(
+      'tasks',
+      {'isComplete': isComplete ? 1 : 0},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
   }
 }

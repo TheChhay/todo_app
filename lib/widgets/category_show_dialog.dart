@@ -61,7 +61,7 @@ class _CategoryShowDialogState extends State<CategoryShowDialog> {
       ],
       backgroundColor: AppColor.blue20,
       title: Text(
-        'Add Category',
+        widget.categoryModel != null ? 'Edit Category' : 'Add Category',
         style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w500),
       ),
       content: Column(
