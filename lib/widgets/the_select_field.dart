@@ -6,16 +6,18 @@ import 'package:todo_app/configs/app_colors.dart';
 class TheSelectField extends StatelessWidget {
   final List<Option<String>> options;
   final void Function(String)? onChanged;
-
+  final Option<String>? initialOption;
   const TheSelectField({
     super.key,
     required this.options,
     this.onChanged,
+    this.initialOption
   });
 
   @override
   Widget build(BuildContext context) {
     return SelectField<String>(
+      initialOption: initialOption,
       menuPosition: MenuPosition.below,
       menuDecoration: MenuDecoration(
         alignment: MenuAlignment.center,height: 160.w,

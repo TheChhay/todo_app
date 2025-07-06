@@ -12,16 +12,15 @@ import 'package:todo_app/widgets/the_select_field.dart';
 import 'package:todo_app/widgets/the_text_field.dart';
 
 class TaskShowyDialog extends StatefulWidget {
-  TaskModel? taskModel;
+  final TaskModel? taskModel;
 
-  TaskShowyDialog({super.key, this.taskModel});
+  const TaskShowyDialog({super.key, this.taskModel});
 
   @override
   State<TaskShowyDialog> createState() => _TaskShowyDialogState();
 }
 
 class _TaskShowyDialogState extends State<TaskShowyDialog> {
-
   List<Option<String>> categoryOptions = [];
   int? _selectedCategory;
   TaskPriority? _selectedPriority;
@@ -34,8 +33,7 @@ class _TaskShowyDialogState extends State<TaskShowyDialog> {
       TaskRepeat.values
           .map((e) => Option(value: e.name, label: e.name.capitalize()))
           .toList();
-    late TextEditingController taskName = TextEditingController();
-
+  late TextEditingController taskName = TextEditingController();
 
   @override
   void initState() {
@@ -51,6 +49,13 @@ class _TaskShowyDialogState extends State<TaskShowyDialog> {
             );
           }).toList();
     }
+    if (widget.taskModel != null) {
+      taskName.text = widget.taskModel!.taskName;
+      _selectedCategory = widget.taskModel!.categoryId;
+      _selectedPriority = widget.taskModel!.priority;
+      _taskRepeat = widget.taskModel!.taskRepeat;
+    }
+    debugPrint('${widget.taskModel!.categoryId}');
   }
 
   @override
@@ -59,7 +64,7 @@ class _TaskShowyDialogState extends State<TaskShowyDialog> {
     return AlertDialog(
       backgroundColor: AppColor.blue20,
       title: Text(
-        'Add Task',
+        widget.taskModel != null ? 'Edit task' : 'Add Task',
         style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w500),
       ),
       content: Column(
@@ -70,6 +75,13 @@ class _TaskShowyDialogState extends State<TaskShowyDialog> {
           TheTextField(inputText: taskName, label: 'Task'),
           const Text('Choose category'),
           TheSelectField(
+            initialOption:
+                _selectedCategory != null
+                    ? categoryOptions.firstWhere(
+                      (option) => option.value == _selectedCategory.toString(),
+                      orElse: () => Option(value: '', label: ''),
+                    )
+                    : null,
             options: categoryOptions,
             onChanged: (value) {
               setState(() {
@@ -77,8 +89,16 @@ class _TaskShowyDialogState extends State<TaskShowyDialog> {
               });
             },
           ),
+
           const Text('Choose priority'),
           TheSelectField(
+            initialOption:
+                _selectedPriority != null
+                    ? Option(
+                      value: _selectedPriority!.name,
+                      label: _selectedPriority!.name.capitalize(),
+                    )
+                    : null,
             options: priorityOptions,
             onChanged: (value) {
               setState(() {
@@ -91,6 +111,13 @@ class _TaskShowyDialogState extends State<TaskShowyDialog> {
           ),
           const Text('Choose repeat'),
           TheSelectField(
+            initialOption:
+                _taskRepeat != null
+                    ? Option(
+                      value: _taskRepeat!.name,
+                      label: _taskRepeat!.name.capitalize(),
+                    )
+                    : null,
             options: repeatOptions,
             onChanged: (value) {
               setState(() {
@@ -114,7 +141,6 @@ class _TaskShowyDialogState extends State<TaskShowyDialog> {
               selectedDate = value;
             },
           ),
-
         ],
       ),
       actions: [
@@ -127,13 +153,18 @@ class _TaskShowyDialogState extends State<TaskShowyDialog> {
         TextButton(
           onPressed: () {
             final taskModel = TaskModel(
+              id: widget.taskModel?.id,
               taskName: taskName.text,
               categoryId: _selectedCategory!,
               priority: _selectedPriority!,
               taskDate: DateTime.now(),
               taskRepeat: _taskRepeat!,
             );
-            context.read<TaskCubit>().addTask(taskModel);
+            if (widget.taskModel == null) {
+              context.read<TaskCubit>().addTask(taskModel);
+            } else {
+              context.read<TaskCubit>().updateTask(taskModel);
+            }
             context.read<CategoryCubit>().loadCategories();
             Navigator.pop(context);
           },

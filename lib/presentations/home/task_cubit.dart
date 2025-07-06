@@ -11,29 +11,59 @@ class TaskCubit extends Cubit<TaskState> {
   TaskCubit(this._taskService) : super(TaskInitial());
 
   Future<void> loadTasks() async {
-    final tasks = await _taskService.getAllTasks();
-    emit(TaskLoaded(tasks));
+    try {
+      emit(TaskLoading());
+      final tasks = await _taskService.getAllTasks();
+      emit(TaskLoaded(tasks));
+    } catch (e) {
+      debugPrint('Load tasks failed: $e');
+      emit(TaskError('Failed to load tasks'));
+    }
   }
 
   Future<void> addTask(TaskModel task) async {
-    await _taskService.insertTask(task);
-    await loadTasks();
-    debugPrint('add task success');
+    try {
+      emit(TaskLoading());
+      await _taskService.insertTask(task);
+      await loadTasks();
+      debugPrint('Add task success');
+    } catch (e) {
+      debugPrint('Add task failed: $e');
+      emit(TaskError('Failed to add task'));
+    }
   }
 
   Future<void> deleteTask(int id) async {
-    await _taskService.deleteTask(id);
-    await loadTasks();
+    try {
+      emit(TaskLoading());
+      await _taskService.deleteTask(id);
+      await loadTasks();
+      debugPrint('Delete task success');
+    } catch (e) {
+      debugPrint('Delete task failed: $e');
+      emit(TaskError('Failed to delete task'));
+    }
   }
 
   Future<void> updateTask(TaskModel task) async {
-    await _taskService.updateTask(task);
-    await loadTasks();
+    try {
+      emit(TaskLoading());
+      await _taskService.updateTask(task);
+      await loadTasks();
+      debugPrint('Update task success');
+    } catch (e) {
+      debugPrint('Update task failed: $e');
+      emit(TaskError('Failed to update task'));
+    }
   }
-  //get all tasks by category
+
   Future<List<TaskModel>> getAllTasksByCategory(int categoryId) async {
-    final result = await _taskService.getTasksByCategory(categoryId);
-    return result;
+    try {
+      return await _taskService.getTasksByCategory(categoryId);
+    } catch (e) {
+      debugPrint('Get tasks by category failed: $e');
+      return []; // return empty list on failure
+    }
   }
 
   //update isComplete task

@@ -61,9 +61,7 @@ class _HomePageState extends State<HomePage> {
             ),
             SliverToBoxAdapter(child: SizedBox(height: 12.h)),
             //title and button create category
-            SliverToBoxAdapter(
-              child: CategoryAndAddButton(),
-            ),
+            SliverToBoxAdapter(child: CategoryAndAddButton()),
 
             // Categories
             SliverToBoxAdapter(
@@ -119,8 +117,58 @@ class _HomePageState extends State<HomePage> {
                                   showDialog(
                                     context: context,
                                     builder:
-                                        (_) => AlertDialog(
-                                          // your delete dialog here
+                                        (dialogContext) => AlertDialog(
+                                          title: const Text('Confirm Delete'),
+                                          content: RichText(
+                                            text: TextSpan(
+                                              style: const TextStyle(
+                                                color: Colors.black,
+                                              ),
+                                              children: [
+                                                const TextSpan(
+                                                  text:
+                                                      'Are you sure you want to delete ',
+                                                ),
+                                                TextSpan(
+                                                  text: category.name,
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                const TextSpan(
+                                                  text: ' category?',
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(
+                                                  dialogContext,
+                                                ); // <-- pop only the dialog
+                                              },
+                                              child: const Text('Cancel'),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                context
+                                                    .read<CategoryCubit>()
+                                                    .deleteCategory(
+                                                      category.id!,
+                                                    );
+                                                Navigator.pop(
+                                                  dialogContext,
+                                                ); // <-- also pop only the dialog
+                                              },
+                                              child: const Text(
+                                                'OK',
+                                                style: TextStyle(
+                                                  color: Colors.red,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                   );
                                 },
@@ -240,10 +288,119 @@ class _HomePageState extends State<HomePage> {
                                       color: AppColor.gray70,
                                     ),
                                   ),
-                                  trailing: const Icon(
-                                    CupertinoIcons.chevron_right,
-                                    color: AppColor.gray60,
-                                    size: 18,
+                                  trailing: PopupMenuButton(
+                                    color: AppColor.blue10,
+                                    icon: Icon(Icons.more_vert, size: 20.w),
+                                    elevation: 1,
+                                    itemBuilder:
+                                        (context) => [
+                                          PopupMenuItem(
+                                            onTap: () {
+                                              showDialog(
+                                                context: context,
+                                                builder:
+                                                    (_) => TaskShowyDialog(
+                                                      taskModel: task,
+                                                    ),
+                                              );
+                                              // debugPrint('task id: ${task}');
+                                            },
+                                            child: Text(
+                                              'Edit',
+                                              style: TextStyle(
+                                                color: AppColor.yellow50,
+                                              ),
+                                            ),
+                                          ),
+                                          PopupMenuItem(
+                                            onTap: () {
+                                              // Delay the dialog to prevent build context issues in PopupMenuItem
+                                              Future.delayed(Duration.zero, () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (
+                                                        dialogContext,
+                                                      ) => AlertDialog(
+                                                        title: const Text(
+                                                          'Confirm Delete',
+                                                        ),
+                                                        content: Text(
+                                                          'Are you sure you want to delete this task?',
+                                                        ),
+                                                        actions: [
+                                                          TextButton(
+                                                            onPressed:
+                                                                () => Navigator.pop(
+                                                                  dialogContext,
+                                                                ),
+                                                            child: const Text(
+                                                              'Cancel',
+                                                            ),
+                                                          ),
+                                                          BlocListener<
+                                                            TaskCubit,
+                                                            TaskState
+                                                          >(
+                                                            listener: (
+                                                              context,
+                                                              state,
+                                                            ) {
+                                                              if (state
+                                                                  is TaskError) {
+                                                                ScaffoldMessenger.of(
+                                                                  context,
+                                                                ).showSnackBar(
+                                                                  SnackBar(
+                                                                    content: Text(
+                                                                      state
+                                                                          .message,
+                                                                    ),
+                                                                  ),
+                                                                );
+                                                              }
+                                                            },
+                                                            child: TextButton(
+                                                              onPressed: () {
+                                                                context
+                                                                    .read<
+                                                                      TaskCubit
+                                                                    >()
+                                                                    .deleteTask(
+                                                                      task.id!,
+                                                                    );
+                                                                context
+                                                                    .read<
+                                                                      CategoryCubit
+                                                                    >()
+                                                                    .loadCategories();
+                                                                Navigator.pop(
+                                                                  dialogContext,
+                                                                );
+                                                              },
+                                                              child: const Text(
+                                                                'OK',
+                                                                style: TextStyle(
+                                                                  color:
+                                                                      Colors
+                                                                          .red,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                );
+                                              });
+                                            },
+                                            child: Text(
+                                              'Delete',
+                                              style: TextStyle(
+                                                color: AppColor.red40,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                   ),
                                 ),
                               ),
