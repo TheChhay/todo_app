@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:todo_app/configs/app_colors.dart';
-import 'package:todo_app/widgets/category_show_dialog.dart';
+import 'package:todo_app/presentations/home/widgets/category_show_dialog.dart';
 
 class CategoryAndAddButton extends StatelessWidget {
   const CategoryAndAddButton({super.key});

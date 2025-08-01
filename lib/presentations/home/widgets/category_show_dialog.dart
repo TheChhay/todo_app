@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:todo_app/configs/app_colors.dart';
 import 'package:todo_app/models/category_model.dart';
-import 'package:todo_app/presentations/home/category_cubit.dart';
+import 'package:todo_app/presentations/home/category_cubit/category_cubit.dart';
 import 'package:todo_app/utils/color_convertor.dart';
 import 'package:todo_app/widgets/list_color.dart';
 import 'package:todo_app/widgets/the_text_field.dart';
@@ -76,6 +76,7 @@ class _CategoryShowDialogState extends State<CategoryShowDialog> {
           ),
           SizedBox(
             height: 50.w,
+            width: double.maxFinite,
             child: ListColor(
               selectedColor: stringToColor(_selectedColor),
               pickColor: (color) {

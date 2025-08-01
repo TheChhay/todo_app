@@ -32,7 +32,8 @@ class CategoryCard extends StatelessWidget {
         width: 160.w,
         decoration: BoxDecoration(
           color: bg,
-          borderRadius: BorderRadius.circular(16.r),
+          borderRadius: BorderRadius.circular(12.r),
+          border: isSelected == true ? Border.all(color: AppColor.darkBlue,) : Border.all(color: Colors.transparent)
         ),
         child: Stack(
           // mainAxisAlignment: MainAxisAlignment.spaceBetween,

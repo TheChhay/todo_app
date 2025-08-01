@@ -6,7 +6,7 @@ class CalenderPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text('Calender'),
+      child: Text('Calender coming soon!'),
     );
   }
 }

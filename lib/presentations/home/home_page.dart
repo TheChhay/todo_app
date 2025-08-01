@@ -4,13 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:todo_app/configs/app_colors.dart';
 import 'package:todo_app/models/task_model.dart';
-import 'package:todo_app/presentations/home/category_cubit.dart';
-import 'package:todo_app/presentations/home/task_cubit.dart';
+import 'package:todo_app/presentations/home/category_cubit/category_cubit.dart';
+import 'package:todo_app/presentations/home/task_cubit/task_cubit.dart';
 import 'package:todo_app/presentations/home/widgets/category_and_add_button.dart';
 import 'package:todo_app/utils/color_convertor.dart';
 import 'package:todo_app/utils/the_string_casing.dart';
-import 'package:todo_app/widgets/category_show_dialog.dart';
-import 'package:todo_app/widgets/task_show_dialog.dart';
+import 'package:todo_app/presentations/home/widgets/category_show_dialog.dart';
+import 'package:todo_app/presentations/home/widgets/task_show_dialog.dart';
 
 import '../../widgets/category_card.dart';
 
@@ -29,22 +29,21 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     // Wait until build is done, then fetch categories
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await context.read<CategoryCubit>().loadCategories();
-      final state = context.read<CategoryCubit>().state;
-      if (state is CategoryLoaded) {
-        final firstCategory = state.categories.first;
-        final tasks = await context.read<TaskCubit>().getAllTasksByCategory(
-          firstCategory.id!,
-        );
-        setState(() {
-          _selectedCategoryId = firstCategory.id;
-          _listTasks = tasks;
-          debugPrint('list task: $_listTasks');
-        });
-      }
-    });
+    _loadInitialTasks();
   }
+  Future<void> _loadInitialTasks() async {
+  final state = context.read<CategoryCubit>().state;
+  if (state is CategoryLoaded && state.categories.isNotEmpty) {
+    final firstCategory = state.categories.first;
+    if (firstCategory.id != null) {
+      final tasks = await context.read<TaskCubit>().getAllTasksByCategory(firstCategory.id!);
+      setState(() {
+        _selectedCategoryId = firstCategory.id;
+        _listTasks = tasks;
+      });
+    }
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +78,9 @@ class _HomePageState extends State<HomePage> {
                         )
                         : SizedBox(
                           height: 120.w,
+                          width: double.maxFinite,
                           child: ListView.builder(
+                            shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
                             itemCount: categories.length,
                             itemBuilder: (context, index) {
@@ -197,19 +198,33 @@ class _HomePageState extends State<HomePage> {
             SliverToBoxAdapter(child: SizedBox(height: 12.h)),
 
             SliverToBoxAdapter(
-              child: BlocBuilder<TaskCubit, TaskState>(
+              child: BlocConsumer<TaskCubit, TaskState>(
+                listener: (context, state) {
+                  // if(state is TaskLoaded){
+                  //   ScaffoldMessenger.of(context).showSnackBar(
+                  //     SnackBar(content: Text('data'))
+                  //   );
+                  // }
+                },
+                // buildWhen: (previous, current) => previous != current,
                 builder: (context, state) {
                   if (state is TaskLoaded) {
-                    final tasks = state.tasks;
-                    if (tasks.isEmpty) {
+                    // final tasks = state.tasks;
+                    final categoryId = _selectedCategoryId;
+
+                    final filteredTasks =
+                        state.tasks
+                            .where((task) => task.categoryId == categoryId)
+                            .toList();
+                    if (filteredTasks.isEmpty) {
                       return const Center(child: Text('No tasks found'));
                     }
                     return ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: tasks.length,
+                      itemCount: filteredTasks.length,
                       itemBuilder: (context, index) {
-                        final task = tasks[index];
+                        final task = filteredTasks[index];
                         final isDone = task.isComplete ?? false;
 
                         return Padding(

@@ -5,10 +5,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:select_field/select_field.dart';
 import 'package:todo_app/configs/app_colors.dart';
 import 'package:todo_app/models/task_model.dart';
-import 'package:todo_app/presentations/home/category_cubit.dart';
-import 'package:todo_app/presentations/home/task_cubit.dart';
+import 'package:todo_app/presentations/home/category_cubit/category_cubit.dart';
+import 'package:todo_app/presentations/home/task_cubit/task_cubit.dart';
 import 'package:todo_app/utils/the_string_casing.dart';
 import 'package:todo_app/widgets/the_select_field.dart';
+import 'package:todo_app/widgets/the_snackbar.dart';
 import 'package:todo_app/widgets/the_text_field.dart';
 
 class TaskShowyDialog extends StatefulWidget {
@@ -55,7 +56,7 @@ class _TaskShowyDialogState extends State<TaskShowyDialog> {
       _selectedPriority = widget.taskModel!.priority;
       _taskRepeat = widget.taskModel!.taskRepeat;
     }
-    debugPrint('${widget.taskModel!.categoryId}');
+    // debugPrint('${widget.taskModel!.categoryId}');
   }
 
   @override
@@ -105,7 +106,7 @@ class _TaskShowyDialogState extends State<TaskShowyDialog> {
                 _selectedPriority = TaskPriority.values.firstWhere(
                   (e) => e.name == value,
                 );
-                debugPrint('priority: ${_selectedPriority!.name}');
+                // debugPrint('priority: ${_selectedPriority!.name}');
               });
             },
           ),
@@ -124,7 +125,7 @@ class _TaskShowyDialogState extends State<TaskShowyDialog> {
                 _taskRepeat = TaskRepeat.values.firstWhere(
                   (e) => e.name == value,
                 );
-                debugPrint('repeat: $value');
+                // debugPrint('repeat: $value');
               });
             },
           ),
@@ -162,13 +163,16 @@ class _TaskShowyDialogState extends State<TaskShowyDialog> {
             );
             if (widget.taskModel == null) {
               context.read<TaskCubit>().addTask(taskModel);
+              ScaffoldMessenger.of(context).showSnackBar(
+                TheSnackbar.build(context,'Added new task.')
+              );
             } else {
               context.read<TaskCubit>().updateTask(taskModel);
             }
             context.read<CategoryCubit>().loadCategories();
             Navigator.pop(context);
           },
-          child: const Text('Save'),
+          child: widget.taskModel == null ? const Text('Save') : const Text('Update', style: TextStyle(color: AppColor.blue80)),
         ),
       ],
     );
