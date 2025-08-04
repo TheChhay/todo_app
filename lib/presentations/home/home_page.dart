@@ -1,12 +1,16 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:todo_app/configs/app_colors.dart';
+import 'package:todo_app/models/category_model.dart';
 import 'package:todo_app/models/task_model.dart';
 import 'package:todo_app/presentations/home/category_cubit/category_cubit.dart';
 import 'package:todo_app/presentations/home/task_cubit/task_cubit.dart';
 import 'package:todo_app/presentations/home/widgets/category_and_add_button.dart';
+import 'package:todo_app/services/noti_service.dart';
 import 'package:todo_app/utils/color_convertor.dart';
 import 'package:todo_app/utils/the_string_casing.dart';
 import 'package:todo_app/presentations/home/widgets/category_show_dialog.dart';
@@ -24,6 +28,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<TaskModel>? _listTasks;
   int? _selectedCategoryId;
+  List<CategoryModel>? _categories;
 
   @override
   void initState() {
@@ -31,19 +36,22 @@ class _HomePageState extends State<HomePage> {
     // Wait until build is done, then fetch categories
     _loadInitialTasks();
   }
+
   Future<void> _loadInitialTasks() async {
-  final state = context.read<CategoryCubit>().state;
-  if (state is CategoryLoaded && state.categories.isNotEmpty) {
-    final firstCategory = state.categories.first;
-    if (firstCategory.id != null) {
-      final tasks = await context.read<TaskCubit>().getAllTasksByCategory(firstCategory.id!);
-      setState(() {
-        _selectedCategoryId = firstCategory.id;
-        _listTasks = tasks;
-      });
+    final state = context.read<CategoryCubit>().state;
+    if (state is CategoryLoaded && state.categories.isNotEmpty) {
+      final firstCategory = state.categories.first;
+      if (firstCategory.id != null) {
+        final tasks = await context.read<TaskCubit>().getAllTasksByCategory(
+          firstCategory.id!,
+        );
+        setState(() {
+          _selectedCategoryId = firstCategory.id;
+          _listTasks = tasks;
+        });
+      }
     }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -67,9 +75,9 @@ class _HomePageState extends State<HomePage> {
               child: BlocBuilder<CategoryCubit, CategoryState>(
                 builder: (context, state) {
                   if (state is CategoryLoaded) {
-                    final categories = state.categories;
+                     _categories = state.categories;
                     final totalTasks = state.totalTasks;
-                    return categories.isEmpty
+                    return _categories!.isEmpty
                         ? SizedBox(
                           height: MediaQuery.of(context).size.height * 0.15,
                           child: Center(
@@ -82,9 +90,9 @@ class _HomePageState extends State<HomePage> {
                           child: ListView.builder(
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
-                            itemCount: categories.length,
+                            itemCount: _categories!.length,
                             itemBuilder: (context, index) {
-                              final category = categories[index];
+                              final category = _categories![index];
                               final taskCount = totalTasks!.firstWhere(
                                 (element) =>
                                     element['category_id'] == category.id,
@@ -198,15 +206,7 @@ class _HomePageState extends State<HomePage> {
             SliverToBoxAdapter(child: SizedBox(height: 12.h)),
 
             SliverToBoxAdapter(
-              child: BlocConsumer<TaskCubit, TaskState>(
-                listener: (context, state) {
-                  // if(state is TaskLoaded){
-                  //   ScaffoldMessenger.of(context).showSnackBar(
-                  //     SnackBar(content: Text('data'))
-                  //   );
-                  // }
-                },
-                // buildWhen: (previous, current) => previous != current,
+              child: BlocBuilder<TaskCubit, TaskState>(
                 builder: (context, state) {
                   if (state is TaskLoaded) {
                     // final tasks = state.tasks;
@@ -219,6 +219,10 @@ class _HomePageState extends State<HomePage> {
                     if (filteredTasks.isEmpty) {
                       return const Center(child: Text('No tasks found'));
                     }
+                    final bgColorFromCate = _categories!
+    .firstWhere((cate) => cate.id == categoryId)
+    .color;
+
                     return ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
@@ -272,14 +276,11 @@ class _HomePageState extends State<HomePage> {
                                     vertical: 12,
                                   ),
                                   leading: CircleAvatar(
-                                    backgroundColor:
-                                        isDone
-                                            ? AppColor.green40
-                                            : AppColor.blue40,
+                                    backgroundColor: stringToColor(bgColorFromCate!),
                                     child: Icon(
                                       isDone
-                                          ? CupertinoIcons.check_mark
-                                          : CupertinoIcons.circle,
+                                          ? CupertinoIcons.checkmark_square_fill
+                                          : CupertinoIcons.square,
                                       color: Colors.white,
                                       size: 20,
                                     ),
@@ -417,7 +418,7 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                         ],
                                   ),
-                                ),
+                                ).animate().fade(duration: 300.ms,),
                               ),
                             ),
                           ),

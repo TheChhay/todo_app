@@ -41,22 +41,29 @@ class _TaskShowyDialogState extends State<TaskShowyDialog> {
     super.initState();
     final state = context.read<CategoryCubit>().state;
     if (state is CategoryLoaded) {
-      final categories = state.categories;
-      categoryOptions =
-          categories.map((category) {
-            return Option<String>(
-              value: category.id.toString(),
-              label: category.name,
-            );
-          }).toList();
+      getCategoryOptions(state);
     }
     if (widget.taskModel != null) {
       taskName.text = widget.taskModel!.taskName;
       _selectedCategory = widget.taskModel!.categoryId;
       _selectedPriority = widget.taskModel!.priority;
       _taskRepeat = widget.taskModel!.taskRepeat;
+    }else{
+    //give the priority default value
+      _selectedPriority = TaskPriority.medium;
+      _taskRepeat = TaskRepeat.oneTime;
     }
     // debugPrint('${widget.taskModel!.categoryId}');
+  }
+
+  void getCategoryOptions(CategoryLoaded state) {
+    categoryOptions =
+        state.categories.map((category) {
+          return Option<String>(
+            value: category.id.toString(),
+            label: category.name,
+          );
+        }).toList();
   }
 
   @override
@@ -73,7 +80,7 @@ class _TaskShowyDialogState extends State<TaskShowyDialog> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          TheTextField(inputText: taskName, label: 'Task'),
+          TheTextField(isAutoFocus: true, inputText: taskName, label: 'Task'),
           const Text('Choose category'),
           TheSelectField(
             initialOption:
@@ -93,13 +100,10 @@ class _TaskShowyDialogState extends State<TaskShowyDialog> {
 
           const Text('Choose priority'),
           TheSelectField(
-            initialOption:
-                _selectedPriority != null
-                    ? Option(
-                      value: _selectedPriority!.name,
-                      label: _selectedPriority!.name.capitalize(),
-                    )
-                    : null,
+            initialOption: Option(
+              label: _selectedPriority!.name,
+              value: _selectedPriority!.name,
+            ),
             options: priorityOptions,
             onChanged: (value) {
               setState(() {
@@ -163,16 +167,22 @@ class _TaskShowyDialogState extends State<TaskShowyDialog> {
             );
             if (widget.taskModel == null) {
               context.read<TaskCubit>().addTask(taskModel);
-              ScaffoldMessenger.of(context).showSnackBar(
-                TheSnackbar.build(context,'Added new task.')
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(TheSnackbar.build(context, 'Added new task.'));
             } else {
               context.read<TaskCubit>().updateTask(taskModel);
             }
             context.read<CategoryCubit>().loadCategories();
             Navigator.pop(context);
           },
-          child: widget.taskModel == null ? const Text('Save') : const Text('Update', style: TextStyle(color: AppColor.blue80)),
+          child:
+              widget.taskModel == null
+                  ? const Text('Save')
+                  : const Text(
+                    'Update',
+                    style: TextStyle(color: AppColor.blue80),
+                  ),
         ),
       ],
     );

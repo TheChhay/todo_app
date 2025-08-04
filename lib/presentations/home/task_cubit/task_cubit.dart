@@ -23,7 +23,6 @@ class TaskCubit extends Cubit<TaskState> {
 
   Future<void> addTask(TaskModel task) async {
     try {
-      emit(TaskLoading());
       await _taskService.insertTask(task);
       await loadTasks();
       debugPrint('Add task success');
@@ -35,7 +34,6 @@ class TaskCubit extends Cubit<TaskState> {
 
   Future<void> deleteTask(int id) async {
     try {
-      emit(TaskLoading());
       await _taskService.deleteTask(id);
       await loadTasks();
       debugPrint('Delete task success');
@@ -46,16 +44,15 @@ class TaskCubit extends Cubit<TaskState> {
   }
 
   Future<void> updateTask(TaskModel task) async {
-    try {
-      emit(TaskLoading());
-      await _taskService.updateTask(task);
-      await loadTasks();
-      debugPrint('Update task success');
-    } catch (e) {
-      debugPrint('Update task failed: $e');
-      emit(TaskError('Failed to update task'));
-    }
+  try {
+    await _taskService.updateTask(task);
+    await loadTasks();
+    debugPrint('Update task success');
+  } catch (e) {
+    debugPrint('Update task failed: $e');
+    emit(TaskError('Failed to update task'));
   }
+}
 
   Future<List<TaskModel>> getAllTasksByCategory(int categoryId) async {
     try {
