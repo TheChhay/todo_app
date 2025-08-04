@@ -20,3 +20,7 @@ class TheSnackbar {
     );
   }
 }
+//usage
+// ScaffoldMessenger.of(context).showSnackBar(
+//                 TheSnackbar.build(context,'Added new task.')
+//               );

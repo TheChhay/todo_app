@@ -7,11 +7,13 @@ import 'package:todo_app/configs/app_cubit_provider.dart';
 import 'package:todo_app/configs/custom_theme.dart';
 import 'package:todo_app/routes/router.dart';
 import 'package:intl/intl_standalone.dart';
+import 'package:todo_app/services/noti_service.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   // deleteAppDatabase();
   await findSystemLocale();
+  await NotiService().initNotification();
   runApp(const App());
 }
 
