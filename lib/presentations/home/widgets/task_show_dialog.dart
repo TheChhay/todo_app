@@ -51,7 +51,7 @@ class _TaskShowyDialogState extends State<TaskShowyDialog> {
     }else{
     //give the priority default value
       _selectedPriority = TaskPriority.medium;
-      _taskRepeat = TaskRepeat.oneTime;
+      // _taskRepeat = TaskRepeat.oneTime;
     }
     // debugPrint('${widget.taskModel!.categoryId}');
   }
@@ -114,7 +114,7 @@ class _TaskShowyDialogState extends State<TaskShowyDialog> {
               });
             },
           ),
-          const Text('Choose repeat'),
+          const Text('Choose repeat (optional)'),
           TheSelectField(
             initialOption:
                 _taskRepeat != null
@@ -153,7 +153,7 @@ class _TaskShowyDialogState extends State<TaskShowyDialog> {
           onPressed: () {
             Navigator.pop(context);
           },
-          child: const Text('Cancel', style: TextStyle(color: AppColor.gray80)),
+          child: const Text('Cancel', style: TextStyle(color: AppColor.gray90)),
         ),
         TextButton(
           onPressed: () {
@@ -163,7 +163,7 @@ class _TaskShowyDialogState extends State<TaskShowyDialog> {
               categoryId: _selectedCategory!,
               priority: _selectedPriority!,
               taskDate: DateTime.now(),
-              taskRepeat: _taskRepeat!,
+              taskRepeat: _taskRepeat,
             );
             if (widget.taskModel == null) {
               context.read<TaskCubit>().addTask(taskModel);

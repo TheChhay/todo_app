@@ -1,6 +1,6 @@
-
 enum TaskPriority { high, medium, low }
-enum TaskRepeat { oneTime, daily, weekday, weekend }
+
+enum TaskRepeat { daily, weekday, weekend }
 
 class TaskModel {
   final int? id;
@@ -11,7 +11,7 @@ class TaskModel {
   final bool? isComplete;
   final DateTime? completedAt;
   final DateTime? reminderDate;
-  final TaskRepeat taskRepeat;
+  final TaskRepeat? taskRepeat;
 
   TaskModel({
     this.id,
@@ -22,7 +22,7 @@ class TaskModel {
     this.isComplete = false,
     this.completedAt,
     this.reminderDate,
-    required this.taskRepeat,
+    this.taskRepeat,
   });
 
   /// Converts from JSON map to Task object
@@ -34,9 +34,18 @@ class TaskModel {
       priority: _priorityFromString(json['priority'] as String),
       taskDate: DateTime.parse(json['task_date']),
       isComplete: json['is_complete'] == 1,
-      completedAt: json['completed_at'] != null ? DateTime.tryParse(json['completed_at']) : null,
-      reminderDate: json['reminder_date'] != null ? DateTime.tryParse(json['reminder_date']) : null,
-      taskRepeat: _taskTypeFromString(json['task_repeat'] as String),
+      completedAt:
+          json['completed_at'] != null
+              ? DateTime.tryParse(json['completed_at'])
+              : null,
+      reminderDate:
+          json['reminder_date'] != null
+              ? DateTime.tryParse(json['reminder_date'])
+              : null,
+      taskRepeat:
+          json['task_repeat'] != null
+              ? _taskTypeFromString(json['task_repeat'] as String)
+              : null,
     );
   }
 
@@ -51,7 +60,7 @@ class TaskModel {
       'is_complete': (isComplete ?? false) ? 1 : 0,
       'completed_at': completedAt?.toIso8601String(),
       'reminder_date': reminderDate?.toIso8601String(),
-      'task_repeat': taskRepeat.name,
+      'task_repeat': taskRepeat?.name,
     };
   }
 
@@ -69,11 +78,11 @@ class TaskModel {
     }
   }
 
-static TaskRepeat _taskTypeFromString(String value) {
-  try {
-    return TaskRepeat.values.firstWhere((e) => e.name == value);
-  } catch (_) {
-    throw ArgumentError('Invalid task type value: $value');
+  static TaskRepeat? _taskTypeFromString(String value) {
+    try {
+      return TaskRepeat.values.firstWhere((e) => e.name == value);
+    } catch (_) {
+      throw ArgumentError('Invalid task type value: $value');
+    }
   }
-}
 }

@@ -39,7 +39,7 @@ class _CategoryShowDialogState extends State<CategoryShowDialog> {
           onPressed: () {
             Navigator.pop(context);
           },
-          child: Text('Cancel'),
+          child: Text('Cancel', style: TextStyle(color: AppColor.gray90),),
         ),
         TextButton(
           onPressed: () {
@@ -69,7 +69,7 @@ class _CategoryShowDialogState extends State<CategoryShowDialog> {
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 10.w,
         children: [
-          TheTextField(inputText: _category, label: 'Category'),
+          TheTextField(inputText: _category, label: 'Category', isAutoFocus: true,),
           Text(
             'Choose color:',
             style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16.sp),
