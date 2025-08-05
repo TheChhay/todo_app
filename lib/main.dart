@@ -8,11 +8,15 @@ import 'package:todo_app/configs/custom_theme.dart';
 import 'package:todo_app/routes/router.dart';
 import 'package:intl/intl_standalone.dart';
 import 'package:todo_app/services/noti_service.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
+import 'package:flutter_localizations/flutter_localizations.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // deleteAppDatabase();
   await findSystemLocale();
+  tz.initializeTimeZones();
   await NotiService().initNotification();
   runApp(const App());
 }
@@ -33,15 +37,21 @@ class App extends StatelessWidget {
       designSize: const Size(375, 812),
       minTextAdapt: true,
       builder:
-          (context, child) =>
-          MultiBlocProvider(
+          (context, child) => MultiBlocProvider(
             providers: appCubitProviders,
             child: MaterialApp.router(
+              localizationsDelegates: [
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: [Locale('en')],
               title: 'To do App',
               theme: CustomTheme.lightTheme,
               debugShowCheckedModeBanner: false,
               darkTheme: CustomTheme.darkTheme,
               routerConfig: appRouter,
+              // locale: Locale(_languageCode),
             ),
           ),
     );

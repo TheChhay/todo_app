@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -75,7 +74,7 @@ class _HomePageState extends State<HomePage> {
               child: BlocBuilder<CategoryCubit, CategoryState>(
                 builder: (context, state) {
                   if (state is CategoryLoaded) {
-                     _categories = state.categories;
+                    _categories = state.categories;
                     final totalTasks = state.totalTasks;
                     return _categories!.isEmpty
                         ? SizedBox(
@@ -219,9 +218,10 @@ class _HomePageState extends State<HomePage> {
                     if (filteredTasks.isEmpty) {
                       return const Center(child: Text('No tasks found'));
                     }
-                    final bgColorFromCate = _categories!
-    .firstWhere((cate) => cate.id == categoryId)
-    .color;
+                    final bgColorFromCate =
+                        _categories!
+                            .firstWhere((cate) => cate.id == categoryId)
+                            .color;
 
                     return ListView.builder(
                       shrinkWrap: true,
@@ -276,7 +276,9 @@ class _HomePageState extends State<HomePage> {
                                     vertical: 12,
                                   ),
                                   leading: CircleAvatar(
-                                    backgroundColor: stringToColor(bgColorFromCate!),
+                                    backgroundColor: stringToColor(
+                                      bgColorFromCate!,
+                                    ),
                                     child: Icon(
                                       isDone
                                           ? CupertinoIcons.checkmark_square_fill
@@ -418,7 +420,7 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                         ],
                                   ),
-                                ).animate().fade(duration: 300.ms,),
+                                ).animate().fade(duration: 300.ms),
                               ),
                             ),
                           ),
@@ -436,6 +438,15 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          // NotiService().showScheduledNotification(
+          //   id: 1,
+          //   title: 'Water Reminder',
+          //   body: 'Time to drink water!',
+          //   scheduledDateTime: DateTime.now().add(
+          //     Duration(seconds: 3),
+          //   ), // 3 seconds later
+          //   payload: 'drink_water',
+          // );
           showDialog(context: context, builder: (context) => TaskShowyDialog());
         },
         shape: CircleBorder(),

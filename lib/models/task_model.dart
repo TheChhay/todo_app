@@ -1,7 +1,11 @@
 enum TaskPriority { high, medium, low }
 
-enum TaskRepeat { daily, weekday, weekend }
-
+enum TaskRepeat {
+  none,
+  daily,
+  weekday,
+  weekend,
+}
 class TaskModel {
   final int? id;
   final String taskName;

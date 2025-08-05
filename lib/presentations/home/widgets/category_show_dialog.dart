@@ -18,6 +18,14 @@ class CategoryShowDialog extends StatefulWidget {
 }
 
 class _CategoryShowDialogState extends State<CategoryShowDialog> {
+  String? _errorText;
+
+  String? _validateInputs() {
+    if (_category.text.trim().isEmpty) {
+      return 'Category name is required.';
+    }
+    return null;
+  }
   TextEditingController _category = TextEditingController();
   String _selectedColor = colorToString(AppColor.blue40);
 
@@ -43,6 +51,16 @@ class _CategoryShowDialogState extends State<CategoryShowDialog> {
         ),
         TextButton(
           onPressed: () {
+            setState(() {
+              _errorText = null;
+            });
+            final error = _validateInputs();
+            if (error != null) {
+              setState(() {
+                _errorText = error;
+              });
+              return;
+            }
             final category = CategoryModel(
               name: _category.text,
               color: _selectedColor,
@@ -50,7 +68,6 @@ class _CategoryShowDialogState extends State<CategoryShowDialog> {
             if (widget.categoryModel != null) {
               category.id = widget.categoryModel!.id;
               context.read<CategoryCubit>().updateCategory(category);
-              // debugPrint('categorys id: ${category.id}');
             } else {
               context.read<CategoryCubit>().addCategory(category);
             }
@@ -70,6 +87,14 @@ class _CategoryShowDialogState extends State<CategoryShowDialog> {
         spacing: 10.w,
         children: [
           TheTextField(inputText: _category, label: 'Category', isAutoFocus: true,),
+          if (_errorText != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Text(
+                _errorText!,
+                style: const TextStyle(color: Colors.red),
+              ),
+            ),
           Text(
             'Choose color:',
             style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16.sp),
