@@ -25,6 +25,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final ScrollController _scrollController = ScrollController();
+  bool _showFab = true;
+  double _lastOffset = 0;
   List<TaskModel>? _listTasks;
   int? _selectedCategoryId;
   List<CategoryModel>? _categories;
@@ -34,6 +37,22 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     // Wait until build is done, then fetch categories
     _loadInitialTasks();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    final offset = _scrollController.offset;
+    if (offset - _lastOffset > 8 && _showFab) {
+      setState(() {
+        _showFab = false;
+      });
+      _lastOffset = offset;
+    } else if (_lastOffset - offset > 8 && !_showFab) {
+      setState(() {
+        _showFab = true;
+      });
+      _lastOffset = offset;
+    }
   }
 
   Future<void> _loadInitialTasks() async {
@@ -58,6 +77,7 @@ class _HomePageState extends State<HomePage> {
       body: Padding(
         padding: EdgeInsets.all(12.w),
         child: CustomScrollView(
+          controller: _scrollController,
           slivers: [
             SliverToBoxAdapter(
               child: Text(
@@ -436,23 +456,16 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // NotiService().showScheduledNotification(
-          //   id: 1,
-          //   title: 'Water Reminder',
-          //   body: 'Time to drink water!',
-          //   scheduledDateTime: DateTime.now().add(
-          //     Duration(seconds: 3),
-          //   ), // 3 seconds later
-          //   payload: 'drink_water',
-          // );
-          showDialog(context: context, builder: (context) => TaskShowyDialog());
-        },
-        shape: CircleBorder(),
-        backgroundColor: AppColor.blue50, // optional styling
-        child: Icon(CupertinoIcons.add, size: 28.w),
-      ),
+      floatingActionButton: _showFab
+          ? FloatingActionButton(
+              onPressed: () {
+                showDialog(context: context, builder: (context) => TaskShowyDialog());
+              },
+              shape: CircleBorder(),
+              backgroundColor: AppColor.blue50, // optional styling
+              child: Icon(CupertinoIcons.add, size: 28.w),
+            )
+          : null,
     );
   }
 }

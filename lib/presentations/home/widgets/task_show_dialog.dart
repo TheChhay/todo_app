@@ -124,6 +124,7 @@ class _TaskShowyDialogState extends State<TaskShowyDialog> {
                   });
                 },
               ),
+              
               const Text('Choose priority'),
               TheSelectField(
                 initialOption: Option(
@@ -157,21 +158,51 @@ class _TaskShowyDialogState extends State<TaskShowyDialog> {
                   });
                 },
               ),
-              Text('Remind later(optional)'),
-              DateTimeFormField(
-                firstDate: DateTime.now().add(
-                  const Duration(days: 0),
-                ), // minimum allow date
-                lastDate: DateTime.now().add(
-                  const Duration(days: 365),
-                ), //maximun allow date
-                initialPickerDateTime: DateTime.now().add(
-                  const Duration(days: 0),
-                ), //Default selected date when picker opens
-                onChanged: (DateTime? value) {
-                  selectedDate = value;
-                },
-              ),
+              _taskRepeat == TaskRepeat.none
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Remind later(optional)'),
+                        DateTimeFormField(
+                          firstDate: DateTime.now().add(
+                            const Duration(days: 0),
+                          ), // minimum allow date
+                          lastDate: DateTime.now().add(
+                            const Duration(days: 365),
+                          ), //maximun allow date
+                          initialPickerDateTime: DateTime.now().add(
+                            const Duration(days: 0),
+                          ), //Default selected date when picker opens
+                          onChanged: (DateTime? value) {
+                            selectedDate = value;
+                          },
+                        ),
+                      ],
+                    )
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Pick time'),
+                        TimePickerSpinner(
+                          time: dateTime,
+                          is24HourMode: false,
+                          isShowSeconds: false,
+                          itemHeight: 30,
+                          hapticFeedback: true,
+                          normalTextStyle: TextStyle(
+                            fontSize: 16.sp,
+                          ),
+                          highlightedTextStyle:
+                              TextStyle(fontSize: 16.sp, color: Colors.blue),
+                          isForce2Digits: true,
+                          onTimeChange: (time) {
+                            setState(() {
+                              dateTime = time;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
               if (_errorText != null)
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
