@@ -36,18 +36,7 @@ class CategoryCard extends StatelessWidget {
           border: isSelected == true ? Border.all(color: AppColor.darkBlue,) : Border.all(color: Colors.transparent)
         ),
         child: Stack(
-          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Centered category name
-            Positioned(
-              left: 44.w,
-              top: 12.w,
-              child: Text(
-                categoryName,
-                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500),
-              ),
-            ),
             // Popup menu on the top-right
             Positioned(
               top: -2.w,
@@ -75,12 +64,23 @@ class CategoryCard extends StatelessWidget {
                     ],
               ),
             ),
-            Positioned(
-              left: 66.w,
-              top: 48.w,
-              child: Text(
-                '$totalTasks',
-                style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.w500),
+            // Center content (category name and total tasks)
+            Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    categoryName,
+                    style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500),
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(height: 12.w),
+                  Text(
+                    '$totalTasks',
+                    style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.w500),
+                  ),
+                ],
               ),
             ),
           ],

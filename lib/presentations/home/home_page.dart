@@ -25,6 +25,44 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  String _formatDate(DateTime date) {
+    const months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+    final monthStr = months[date.month - 1];
+    return '${date.year}-$monthStr-${date.day.toString().padLeft(2, '0')}';
+  }
+
+  Widget _buildTaskTitle(TaskModel task, bool isDone) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,spacing: 2.w,
+      children: [
+        Text(
+          task.taskName,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: AppColor.blue100,
+            decoration: isDone ? TextDecoration.lineThrough : null,
+          ),
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+        ),
+        SizedBox(height: 2),
+        Text(
+          _formatDate(task.taskDate),
+          style: TextStyle(
+            fontSize: 12,
+            color: AppColor.gray70,
+          ),
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+        ),
+      ],
+    );
+  }
   final ScrollController _scrollController = ScrollController();
   bool _showFab = true;
   double _lastOffset = 0;
@@ -211,7 +249,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
-            // Tasks section
+            // Tasks
             SliverToBoxAdapter(child: SizedBox(height: 24.h)),
             SliverToBoxAdapter(
               child: Text(
@@ -268,6 +306,7 @@ class _HomePageState extends State<HomePage> {
                                   priority: task.priority,
                                   taskDate: task.taskDate,
                                   taskRepeat: task.taskRepeat,
+                                  dateTimeRepeat: task.dateTimeRepeat,
                                   isComplete: !isDone, // ✅ Toggle here
                                   completedAt: !isDone ? DateTime.now() : null,
                                   reminderDate: task.reminderDate,
@@ -307,18 +346,7 @@ class _HomePageState extends State<HomePage> {
                                       size: 20,
                                     ),
                                   ),
-                                  title: Text(
-                                    task.taskName,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                      color: AppColor.blue100,
-                                      decoration:
-                                          isDone
-                                              ? TextDecoration.lineThrough
-                                              : null,
-                                    ),
-                                  ),
+                                  title: _buildTaskTitle(task, isDone),
                                   subtitle: Text(
                                     task.priority.name.capitalize(),
                                     style: const TextStyle(
@@ -456,16 +484,20 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      floatingActionButton: _showFab
-          ? FloatingActionButton(
-              onPressed: () {
-                showDialog(context: context, builder: (context) => TaskShowyDialog());
-              },
-              shape: CircleBorder(),
-              backgroundColor: AppColor.blue50, // optional styling
-              child: Icon(CupertinoIcons.add, size: 28.w),
-            )
-          : null,
+      floatingActionButton:
+          _showFab
+              ? FloatingActionButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => TaskShowyDialog(),
+                  );
+                },
+                shape: CircleBorder(),
+                backgroundColor: AppColor.blue50, // optional styling
+                child: Icon(CupertinoIcons.add, size: 28.w),
+              )
+              : null,
     );
   }
 }

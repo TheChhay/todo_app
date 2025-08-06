@@ -7,6 +7,7 @@ import 'package:todo_app/configs/app_colors.dart';
 import 'package:todo_app/models/task_model.dart';
 import 'package:todo_app/presentations/home/category_cubit/category_cubit.dart';
 import 'package:todo_app/presentations/home/task_cubit/task_cubit.dart';
+import 'package:todo_app/services/noti_service.dart';
 import 'package:todo_app/utils/the_string_casing.dart';
 import 'package:todo_app/widgets/the_select_field.dart';
 import 'package:todo_app/widgets/the_snackbar.dart';
@@ -23,6 +24,42 @@ class TaskShowyDialog extends StatefulWidget {
 }
 
 class _TaskShowyDialogState extends State<TaskShowyDialog> {
+  // Helper to get notification id based on TaskRepeat
+  int _getNotificationId(TaskRepeat? repeat) {
+    switch (repeat) {
+      case TaskRepeat.daily:
+        return 1;
+      case TaskRepeat.weekday:
+        return 2;
+      case TaskRepeat.weekend:
+        return 3;
+      case TaskRepeat.none:
+      default:
+        return 0;
+    }
+  }
+
+  // Helper to get category name for notification title
+  String _getCategoryName() {
+    final category = categoryOptions.firstWhere(
+      (option) => option.value == _selectedCategory?.toString(),
+      orElse: () => Option(value: '', label: ''),
+    );
+    return category.label;
+  }
+
+  // Helper to schedule notification
+  void _scheduleNotification(DateTime scheduledDateTime) {
+    NotiService().showScheduledNotification(
+      id: _getNotificationId(_taskRepeat),
+      title: _getCategoryName(),
+      body: taskName.text,
+      scheduledDateTime: scheduledDateTime,
+      payload: (_taskRepeat ?? TaskRepeat.none).name,
+      repeatType: _taskRepeat ?? TaskRepeat.none,
+    );
+  }
+  DateTime? _remindDate;
   String? _validateInputs() {
     if (taskName.text.trim().isEmpty) {
       return 'Task name is required.';
@@ -67,6 +104,8 @@ class _TaskShowyDialogState extends State<TaskShowyDialog> {
       _selectedCategory = widget.taskModel!.categoryId;
       _selectedPriority = widget.taskModel!.priority;
       _taskRepeat = widget.taskModel!.taskRepeat;
+      _remindDate = widget.taskModel!.reminderDate;
+      debugPrint('remind date: ${widget.taskModel!.reminderDate}');
     } else {
       //give the priority default value
       _selectedPriority = TaskPriority.medium;
@@ -87,7 +126,7 @@ class _TaskShowyDialogState extends State<TaskShowyDialog> {
 
   @override
   Widget build(BuildContext context) {
-    DateTime? selectedDate;
+    // removed unused selectedDate
     return AlertDialog(
       backgroundColor: AppColor.blue20,
       title: Text(
@@ -173,8 +212,11 @@ class _TaskShowyDialogState extends State<TaskShowyDialog> {
                           initialPickerDateTime: DateTime.now().add(
                             const Duration(days: 0),
                           ), //Default selected date when picker opens
+                          initialValue: _remindDate,
                           onChanged: (DateTime? value) {
-                            selectedDate = value;
+                            setState(() {
+                              _remindDate = value;
+                            });
                           },
                         ),
                       ],
@@ -237,6 +279,7 @@ class _TaskShowyDialogState extends State<TaskShowyDialog> {
             final taskModel = TaskModel(
               id: widget.taskModel?.id,
               taskName: taskName.text,
+              reminderDate: _remindDate,
               categoryId: _selectedCategory!,
               priority: _selectedPriority!,
               taskDate: DateTime.now(),
@@ -249,6 +292,18 @@ class _TaskShowyDialogState extends State<TaskShowyDialog> {
               ).showSnackBar(TheSnackbar.build(context, 'Added new task.'));
             } else {
               context.read<TaskCubit>().updateTask(taskModel);
+            }
+            // Schedule notification based on user input
+            DateTime? scheduledDateTime;
+            if (_taskRepeat == TaskRepeat.none) {
+              scheduledDateTime = _remindDate;
+            } else {
+              // Use today's date with picked time for repeat
+              final now = DateTime.now();
+              scheduledDateTime = DateTime(now.year, now.month, now.day, dateTime.hour, dateTime.minute);
+            }
+            if (scheduledDateTime != null) {
+              _scheduleNotification(scheduledDateTime);
             }
             context.read<CategoryCubit>().loadCategories();
             Navigator.pop(context);

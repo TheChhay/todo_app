@@ -11,10 +11,11 @@ class TaskModel {
   final String taskName;
   final int categoryId;
   final TaskPriority priority;
-  final DateTime taskDate;
+  final DateTime taskDate; // task create at
   final bool? isComplete;
   final DateTime? completedAt;
   final DateTime? reminderDate;
+  final DateTime? dateTimeRepeat;
   final TaskRepeat? taskRepeat;
 
   TaskModel({
@@ -26,13 +27,14 @@ class TaskModel {
     this.isComplete = false,
     this.completedAt,
     this.reminderDate,
+    this.dateTimeRepeat,
     this.taskRepeat,
   });
 
   /// Converts from JSON map to Task object
   factory TaskModel.fromJson(Map<String, dynamic> json) {
     return TaskModel(
-      id: json['id'] as int,
+      id: json['id'] as int?,
       taskName: json['task_name'] as String,
       categoryId: json['category_id'] as int,
       priority: _priorityFromString(json['priority'] as String),
@@ -45,6 +47,10 @@ class TaskModel {
       reminderDate:
           json['reminder_date'] != null
               ? DateTime.tryParse(json['reminder_date'])
+              : null,
+      dateTimeRepeat:
+          json['datetime_repeat'] != null
+              ? DateTime.tryParse(json['datetime_repeat'])
               : null,
       taskRepeat:
           json['task_repeat'] != null
@@ -64,6 +70,7 @@ class TaskModel {
       'is_complete': (isComplete ?? false) ? 1 : 0,
       'completed_at': completedAt?.toIso8601String(),
       'reminder_date': reminderDate?.toIso8601String(),
+      'datetime_repeat': dateTimeRepeat?.toIso8601String(),
       'task_repeat': taskRepeat?.name,
     };
   }

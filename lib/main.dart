@@ -9,7 +9,6 @@ import 'package:todo_app/routes/router.dart';
 import 'package:intl/intl_standalone.dart';
 import 'package:todo_app/services/noti_service.dart';
 import 'package:timezone/data/latest.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
