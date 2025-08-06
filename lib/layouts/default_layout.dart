@@ -22,7 +22,7 @@ class DefaultLayout extends StatelessWidget {
         bottomNavigationBar: BlocBuilder<NavCubit, NavState>(
           builder: (context, state) {
             return GNav(
-              backgroundColor: AppColor.darkBlue,
+              backgroundColor: AppColor.blue80,
               color: AppColor.blue10,
               activeColor: AppColor.blue10,
               onTabChange: (index) {
