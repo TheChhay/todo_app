@@ -93,7 +93,8 @@ class _HomePageState extends State<HomePage> {
     _scrollController.addListener(_onScroll);
 // MARK: banner ads
     _bannerAd = BannerAd(
-      adUnitId: AppUnitId.bannerDev,
+      // adUnitId: AppUnitId.bannerDev,
+      adUnitId: AppUnitId.bannerProd,
       request: AdRequest(),
       size: AdSize.banner,
       listener: BannerAdListener(

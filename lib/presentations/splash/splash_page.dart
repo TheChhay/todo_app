@@ -45,7 +45,8 @@ class _SplashPageState extends State<SplashPage> {
 
     void _loadInterstitialAd() {
     InterstitialAd.load(
-      adUnitId: AppUnitId.interstitialDev, // Use test ID for dev
+      // adUnitId: AppUnitId.interstitialDev,
+      adUnitId: AppUnitId.interstitialProd,
       request: AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (ad) {
