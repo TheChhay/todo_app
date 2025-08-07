@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:line_icons/line_icons.dart';
 import 'package:todo_app/configs/app_colors.dart';
 import 'package:todo_app/layouts/nav_cubit.dart';
 import 'package:go_router/go_router.dart';

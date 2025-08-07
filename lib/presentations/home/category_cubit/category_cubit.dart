@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:flutter/foundation.dart';
 import 'package:todo_app/models/category_model.dart';
 import 'package:todo_app/services/category_service.dart';
 
@@ -30,10 +29,10 @@ class CategoryCubit extends Cubit<CategoryState> {
 
       emit(CategorySuccess('Category added successfully.'));
       emit(CategoryLoaded(categories, totalTasks));
-      print('Category added successfully.');
+      // print('Category added successfully.');
     } catch (e) {
       emit(CategoryError('Failed to add category: $e'));
-      print('$e');
+      // print('$e');
     }
   }
 

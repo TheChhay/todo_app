@@ -14,6 +14,7 @@ class TaskService {
     return result.map((json) => TaskModel.fromJson(json)).toList();
   }
 
+
   Future<void> deleteTask(int id) async {
     final db = await DatabaseSqlite.instance.database;
     await db.delete('tasks', where: 'id = ?', whereArgs: [id]);

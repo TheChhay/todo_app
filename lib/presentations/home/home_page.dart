@@ -1,15 +1,18 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:todo_app/configs/appUnitid.dart';
 import 'package:todo_app/configs/app_colors.dart';
 import 'package:todo_app/models/category_model.dart';
 import 'package:todo_app/models/task_model.dart';
 import 'package:todo_app/presentations/home/category_cubit/category_cubit.dart';
 import 'package:todo_app/presentations/home/task_cubit/task_cubit.dart';
 import 'package:todo_app/presentations/home/widgets/category_and_add_button.dart';
-import 'package:todo_app/services/noti_service.dart';
 import 'package:todo_app/utils/color_convertor.dart';
 import 'package:todo_app/utils/the_string_casing.dart';
 import 'package:todo_app/presentations/home/widgets/category_show_dialog.dart';
@@ -25,11 +28,24 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late BannerAd _bannerAd;
+  bool isBannerReady = false;
+
 
   String _formatDate(DateTime date) {
     const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     final monthStr = months[date.month - 1];
     return '${date.year}-$monthStr-${date.day.toString().padLeft(2, '0')}';
@@ -37,7 +53,8 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildTaskTitle(TaskModel task, bool isDone) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,spacing: 2.w,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 2.w,
       children: [
         Text(
           task.taskName,
@@ -53,16 +70,14 @@ class _HomePageState extends State<HomePage> {
         SizedBox(height: 2),
         Text(
           _formatDate(task.taskDate),
-          style: TextStyle(
-            fontSize: 12,
-            color: AppColor.gray70,
-          ),
+          style: TextStyle(fontSize: 12, color: AppColor.gray70),
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
         ),
       ],
     );
   }
+
   final ScrollController _scrollController = ScrollController();
   bool _showFab = true;
   double _lastOffset = 0;
@@ -76,7 +91,29 @@ class _HomePageState extends State<HomePage> {
     // Wait until build is done, then fetch categories
     _loadInitialTasks();
     _scrollController.addListener(_onScroll);
+// MARK: banner ads
+    _bannerAd = BannerAd(
+      adUnitId: AppUnitId.bannerDev,
+      request: AdRequest(),
+      size: AdSize.banner,
+      listener: BannerAdListener(
+        onAdLoaded: (_) {
+          setState(() {
+            isBannerReady = true;
+          });
+        },
+        onAdFailedToLoad: (ad, error) {
+          isBannerReady = false;
+          debugPrint('banner error: $error');
+          ad.dispose();
+        },
+      ),
+    );
+    _bannerAd.load();
+
   }
+
+
 
   void _onScroll() {
     final offset = _scrollController.offset;
@@ -111,6 +148,12 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final AdWidget adWidget = AdWidget(ad: _bannerAd);
+    final Container adContianer = Container(
+      child: adWidget,
+      width: _bannerAd.size.width.toDouble(),
+      height: _bannerAd.size.height.toDouble(),
+    );
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.all(12.w),
@@ -127,7 +170,7 @@ class _HomePageState extends State<HomePage> {
             //title and button create category
             SliverToBoxAdapter(child: CategoryAndAddButton()),
 
-            // Categories
+            //MARK: list Categories
             SliverToBoxAdapter(
               child: BlocBuilder<CategoryCubit, CategoryState>(
                 builder: (context, state) {
@@ -155,7 +198,7 @@ class _HomePageState extends State<HomePage> {
                                     element['category_id'] == category.id,
                                 orElse: () => {'count': 0},
                               );
-
+// MARK:category card
                               return CategoryCard(
                                 isSelected: category.id == _selectedCategoryId,
                                 bg: stringToColor(category.color!),
@@ -280,7 +323,7 @@ class _HomePageState extends State<HomePage> {
                         _categories!
                             .firstWhere((cate) => cate.id == categoryId)
                             .color;
-
+//  MARK: list tasks
                     return ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
@@ -481,22 +524,26 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
             ),
+
+            SliverToBoxAdapter(child: adContianer),
           ],
         ),
       ),
+      // MARK: float button
       floatingActionButton:
           _showFab
               ? FloatingActionButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => TaskShowyDialog(),
-                  );
-                },
-                shape: CircleBorder(),
-                backgroundColor: AppColor.blue50, // optional styling
-                child: Icon(CupertinoIcons.add, size: 28.w),
-              )
+                  onPressed: () {
+                   
+                    showDialog(
+                      context: context,
+                      builder: (context) => TaskShowyDialog(),
+                    );
+                  },
+                  shape: CircleBorder(),
+                  backgroundColor: AppColor.blue50, // optional styling
+                  child: Icon(CupertinoIcons.add, size: 28.w),
+                )
               : null,
     );
   }

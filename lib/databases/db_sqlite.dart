@@ -23,7 +23,7 @@ class DatabaseSqlite {
       onCreate: _onCreate,
     );
 
-    print('Created database at $dbPath');
+    // debugPrint('Created database at $dbPath');
     return _db!;
   }
 

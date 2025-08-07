@@ -1,7 +1,4 @@
-import 'dart:ui';
-import 'package:todo_app/configs/app_colors.dart';
-import 'package:todo_app/utils/color_convertor.dart';
-import 'package:flutter/material.dart';
+
 
 class CategoryModel {
   int? id;
